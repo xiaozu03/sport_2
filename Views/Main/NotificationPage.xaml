@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:oculus_sport.ViewModels.Main"
+             xmlns:models="clr-namespace:oculus_sport.Models"
+             x:Class="oculus_sport.Views.Main.NotificationPage"
+             Title="Notifications"
+             BackgroundColor="{StaticResource PageBackgroundLight}">
+
+    <CollectionView ItemsSource="{Binding Notifications}" Margin="20">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:NotificationItem">
+                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="{StaticResource White}" Margin="0,0,0,10" Padding="15">
+                    <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto">
+
+                        <!-- Title & Dot -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding Title}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource Black}"/>
+                        <BoxView Grid.Row="0" Grid.Column="1" HeightRequest="8" WidthRequest="8" CornerRadius="4" BackgroundColor="{StaticResource Primary}" IsVisible="{Binding IsRead, Converter={StaticResource InvertedBoolConverter}}"/>
+                        <!-- Show dot if unread -->
+
+                        <!-- Message -->
+                        <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Message}" FontSize="14" TextColor="Gray" Margin="0,5,0,5"/>
+
+                        <!-- Time -->
+                        <Label Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Time}" FontSize="11" TextColor="{StaticResource Gray400}" HorizontalOptions="End"/>
+
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

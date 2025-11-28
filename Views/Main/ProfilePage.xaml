@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:oculus_sport.ViewModels.Main"
+             x:Class="oculus_sport.Views.Main.ProfilePage"
+             Title="Profile"
+             BackgroundColor="{StaticResource PageBackgroundLight}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Profile Header Card -->
+            <Border StrokeShape="RoundRectangle 15" BackgroundColor="{StaticResource White}" StrokeThickness="0" Padding="20">
+                <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <!-- Avatar -->
+                    <Border StrokeShape="RoundRectangle 50" HeightRequest="100" WidthRequest="100" Stroke="{StaticResource Primary}" StrokeThickness="2">
+                        <Image Source="dotnet_bot.png" Aspect="AspectFill"/>
+                    </Border>
+
+                    <!-- Name & ID -->
+                    <Label Text="{Binding Name}" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource Black}" HorizontalOptions="Center"/>
+                    <Label Text="{Binding StudentId}" FontSize="14" TextColor="Gray" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Details Section -->
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Account Details" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Black}"/>
+
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource White}" StrokeThickness="0" Padding="15">
+                    <VerticalStackLayout Spacing="15">
+                        <VerticalStackLayout>
+                            <Label Text="Email" FontSize="12" TextColor="Gray"/>
+                            <Label Text="{Binding Email}" FontSize="16" TextColor="{StaticResource Black}"/>
+                        </VerticalStackLayout>
+                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}"/>
+
+                        <VerticalStackLayout>
+                            <Label Text="Phone" FontSize="12" TextColor="Gray"/>
+                            <Label Text="+60 12-345 6789" FontSize="16" TextColor="{StaticResource Black}"/>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Dark Mode Settings Section 
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Settings" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource Black}"/>
+
+                <Border StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource White}" StrokeThickness="0" Padding="15">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Text="Dark Mode" VerticalOptions="Center" TextColor="{StaticResource Black}"/>
+                        <Switch Grid.Column="1" IsToggled="{Binding IsDarkMode}" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+            -->
+
+            <!-- Actions -->
+            <Button Text="Log Out" 
+                    Command="{Binding LogoutCommand}" 
+                    BackgroundColor="#FFEBEE" 
+                    TextColor="#D32F2F"
+                    CornerRadius="10"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
