@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "507807196976",
+    "project_id": "oculus-sport",
+    "storage_bucket": "oculus-sport.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507807196976:android:52c892dfe472b22e3a0af5",
+        "android_client_info": {
+          "package_name": "com.mad.oculussport"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507807196976-vptga5stu5ril4mjsb6cug59rjqvjisi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYLKCEnZv33cviHuNRy4Go8IZVWcu-0aI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507807196976-vptga5stu5ril4mjsb6cug59rjqvjisi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
