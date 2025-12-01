@@ -10,6 +10,7 @@ namespace oculus_sport.ViewModels.Auth
     public partial class SignUpPageViewModel : BaseViewModel
     {
         private readonly IAuthService _authService;
+        //private readonly FirestoreService _firestoreService;
 
         [ObservableProperty]
         private string _email = string.Empty;
@@ -30,6 +31,7 @@ namespace oculus_sport.ViewModels.Auth
         public SignUpPageViewModel(IAuthService authService)
         {
             _authService = authService;
+            //_firestoreService = firestoreService;
             Title = "Sign Up";
         }
 
@@ -56,13 +58,13 @@ namespace oculus_sport.ViewModels.Auth
             }
 
             // 2. Strong Password Validation
-            if (!IsStrongPassword(Password))
-            {
-                await Shell.Current.DisplayAlert("Weak Password",
-                    "Password must be at least 8 characters long, contain an uppercase letter, and a special character.",
-                    "OK");
-                return;
-            }
+            //if (!IsStrongPassword(Password))
+            //{
+            //    await Shell.Current.DisplayAlert("Weak Password",
+            //        "Password must be at least 8 characters long, contain an uppercase letter, and a special character.",
+            //        "OK");
+            //    return;
+            //}
 
             try
             {
@@ -73,8 +75,8 @@ namespace oculus_sport.ViewModels.Auth
 
                 if (newUser != null)
                 {
+                    // At this point, user is created in Firebase Auth only
                     await Shell.Current.DisplayAlert("Success", "Account created successfully! Please log in.", "OK");
-                    // Redirect to Login Page
                     await Shell.Current.GoToAsync("..");
                 }
             }
@@ -95,11 +97,12 @@ namespace oculus_sport.ViewModels.Auth
             await Shell.Current.GoToAsync("..");
         }
 
-        private bool IsStrongPassword(string password)
-        {
-            // Regex: At least 8 chars, 1 Upper, 1 Special char
-            var regex = new Regex(@"^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).{8,}$");
-            return regex.IsMatch(password);
-        }
+        //-------------comment first to test signup and login
+        //private bool IsStrongPassword(string password)
+        //{
+        //    // Regex: At least 8 chars, 1 Upper, 1 Special char
+        //    var regex = new Regex(@"^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).{8,}$");
+        //    return regex.IsMatch(password);
+        //}
     }
 }

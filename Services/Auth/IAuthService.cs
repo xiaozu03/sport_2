@@ -10,8 +10,10 @@ namespace oculus_sport.Services.Auth
         // Added the four required parameters (name, studentId) and return User.
         Task<User> SignUpAsync(string email, string password, string name, string studentId);
 
-        void Logout();
+        //void Logout();
+        Task LogoutAsync();
 
         User? GetCurrentUser();
+        Task<string?> RefreshIdTokenAsync();
     }
 }

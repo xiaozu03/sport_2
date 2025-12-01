@@ -1,162 +1,147 @@
-using System;
-using System.Threading.Tasks;
-using Plugin.Firebase.Auth;
+﻿using Microsoft.Maui.Storage;
 using oculus_sport.Models;
-using oculus_sport.Services.Storage;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace oculus_sport.Services.Auth
 {
     public class FirebaseAuthService : IAuthService
     {
-        private readonly IDatabaseService _databaseService;
-        private readonly IFirebaseAuth _auth;
+        private readonly HttpClient _httpClient;
+        private const string ApiKey = "AIzaSyCYLKCEnZv33cviHuNRy4Go8IZVWcu-0aI";
         private User? _currentUser;
-        private readonly IDisposable _authListenerHandle;
 
-        public FirebaseAuthService(IDatabaseService databaseService)
+        public FirebaseAuthService(HttpClient httpClient)
         {
-            _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
-
-            // Note: This might throw if Firebase isn't init yet on platform level.
-            // Ideally, wrap in try-catch or check initialization state.
-            try
-            {
-                _auth = CrossFirebaseAuth.Current;
-            }
-            catch
-            {
-                _auth = null;
-            }
-
-            if (_auth != null)
-            {
-                _authListenerHandle = _auth.AddAuthStateListener(auth =>
-                {
-                    var fbUser = auth.CurrentUser;
-
-                    if (fbUser != null)
-                    {
-                        _currentUser = new User
-                        {
-                            Id = fbUser.Uid,
-                            Email = fbUser.Email,
-                            Name = fbUser.DisplayName
-                        };
-                    }
-                    else
-                    {
-                        _currentUser = null;
-                    }
-                });
-            }
+            _httpClient = httpClient;
         }
 
+        private class FirebaseAuthResponse
+        {
+            public string LocalId { get; set; } = string.Empty;
+            public string Email { get; set; } = string.Empty;
+            public string IdToken { get; set; } = string.Empty;
+            public string RefreshToken { get; set; } = string.Empty;
+            public FirebaseError? Error { get; set; }
+        }
+
+        private class FirebaseError
+        {
+            public string Message { get; set; } = string.Empty;
+        }
+
+
+        // Log in user with email and password
         public async Task<User> LoginAsync(string email, string password)
         {
-            if (_auth == null) throw new InvalidOperationException("Firebase Auth not initialized.");
+            var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={ApiKey}";
+            var payload = new { email, password, returnSecureToken = true };
+            var json = JsonSerializer.Serialize(payload);
 
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Email and password must be provided.");
+            var response = await _httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+            var result = await response.Content.ReadAsStringAsync();
 
-            try
+            Console.WriteLine("Firebase raw response:");
+            Console.WriteLine(result);
+
+            var authResponse = JsonSerializer.Deserialize<FirebaseAuthResponse>(
+                result,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            if (!response.IsSuccessStatusCode || !string.IsNullOrEmpty(authResponse?.Error?.Message))
             {
-                var fbUser = await _auth.SignInWithEmailAndPasswordAsync(email, password);
-
-                if (fbUser == null)
-                    throw new Exception("Login succeeded but no Firebase user returned.");
-
-                // Load profile from Firestore
-                var profile = await _databaseService.GetUserByFirebaseIdAsync(fbUser.Uid);
-
-                if (profile == null)
-                {
-                    // Fallback if profile missing in DB but auth succeeded
-                    return new User { Id = fbUser.Uid, Email = fbUser.Email };
-                }
-
-                _currentUser = profile;
-                return profile;
+                var message = authResponse?.Error?.Message ?? "Unknown error";
+                throw new Exception($"Login failed: {message}");
             }
-            catch (Exception ex)
+
+            if (string.IsNullOrWhiteSpace(authResponse?.IdToken))
+                throw new Exception("Firebase did not return a valid idToken.");
+
+            _currentUser = new User
             {
-                throw new Exception($"Login failed: {ex.Message}", ex);
-            }
+                Id = authResponse.LocalId,
+                Email = authResponse.Email
+            };
+
+            await SecureStorage.SetAsync("idToken", authResponse.IdToken);
+            await SecureStorage.SetAsync("refreshToken", authResponse.RefreshToken);
+
+            Console.WriteLine($"Login successful for user: {authResponse.Email} (ID: {authResponse.LocalId})");
+
+            return _currentUser!;
         }
 
+
+        // -------------Sign up new user
         public async Task<User> SignUpAsync(string email, string password, string name, string studentId)
         {
-            if (_auth == null) throw new InvalidOperationException("Firebase Auth not initialized.");
+            var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={ApiKey}";
+            var payload = new { email, password, returnSecureToken = true };
+            var json = JsonSerializer.Serialize(payload);
 
-            if (string.IsNullOrWhiteSpace(email) ||
-                string.IsNullOrWhiteSpace(password) ||
-                string.IsNullOrWhiteSpace(name) ||
-                string.IsNullOrWhiteSpace(studentId))
+            var response = await _httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Firebase signup failed: {result}");
+
+            var authResponse = JsonSerializer.Deserialize<FirebaseAuthResponse>(result)!;
+
+            if (string.IsNullOrWhiteSpace(authResponse.IdToken))
+                throw new Exception("Firebase did not return a valid idToken.");
+
+            _currentUser = new User
             {
-                throw new ArgumentException("All fields must be provided.");
-            }
+                Id = authResponse.LocalId,
+                Email = authResponse.Email,
+                Name = name,
+                StudentId = studentId
+            };
 
-            try
-            {
-                var fbUser = await _auth.CreateUserAsync(email, password);
+            await SecureStorage.SetAsync("idToken", authResponse.IdToken);
+            await SecureStorage.SetAsync("refreshToken", authResponse.RefreshToken);
 
-                if (fbUser == null)
-                    throw new Exception("Failed to create Firebase user.");
-
-                var newUser = new User
-                {
-                    Id = fbUser.Uid,
-                    Email = email,
-                    Name = name,
-                    StudentId = studentId
-                };
-
-                await _databaseService.SaveUserProfileAsync(newUser);
-
-                _currentUser = newUser;
-                return newUser;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Sign up failed: {ex.Message}", ex);
-            }
+            return _currentUser!;
         }
 
-        public void Logout()
+        // Refresh token
+        public async Task<string?> RefreshIdTokenAsync()
         {
-            try
+            var refreshToken = await SecureStorage.GetAsync("refreshToken");
+            if (string.IsNullOrWhiteSpace(refreshToken)) return null;
+
+            var url = $"https://securetoken.googleapis.com/v1/token?key={ApiKey}";
+            var content = new FormUrlEncodedContent(new[]
             {
-                _auth?.SignOutAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error signing out.", ex);
-            }
-            finally
-            {
-                _currentUser = null;
-            }
+                new KeyValuePair<string, string>("grant_type", "refresh_token"),
+                new KeyValuePair<string, string>("refresh_token", refreshToken)
+            });
+
+            var response = await _httpClient.PostAsync(url, content);
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            var json = JsonSerializer.Deserialize<JsonElement>(result);
+            var newIdToken = json.GetProperty("id_token").GetString();
+
+            if (!string.IsNullOrWhiteSpace(newIdToken))
+                await SecureStorage.SetAsync("idToken", newIdToken);
+
+            return newIdToken;
         }
 
-        public User? GetCurrentUser()
+        // Log out user, clear stored tokens
+        public async Task LogoutAsync()
         {
-            if (_currentUser != null)
-                return _currentUser;
-
-            if (_auth == null) return null;
-
-            var fb = _auth.CurrentUser;
-
-            if (fb != null)
-            {
-                return new User
-                {
-                    Id = fb.Uid,
-                    Email = fb.Email,
-                    Name = fb.DisplayName
-                };
-            }
-
-            return null;
+            _currentUser = null;
+            await SecureStorage.SetAsync("idToken", string.Empty);
+            await SecureStorage.SetAsync("refreshToken", string.Empty);
         }
+
+        public User? GetCurrentUser() => _currentUser;
     }
 }

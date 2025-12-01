@@ -13,11 +13,13 @@
     <ShellContent
         ContentTemplate="{DataTemplate auth:LoginPage}"
         Route="LoginPage"
+        Title="Login"
         Shell.FlyoutBehavior="Disabled" 
         Shell.NavBarIsVisible="False"
         Shell.TabBarIsVisible="False" />
     <ShellContent
         ContentTemplate="{DataTemplate auth:SignUpPage}"
+        Title="Sign Up"
         Route="SignUpPage"
         Shell.FlyoutBehavior="Disabled"
         Shell.NavBarIsVisible="False"

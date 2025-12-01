@@ -1,5 +1,7 @@
 ﻿using oculus_sport.Views.Auth;
 using oculus_sport.Views.Main;
+using Microsoft.Maui.Controls;
+
 
 namespace oculus_sport;
 
