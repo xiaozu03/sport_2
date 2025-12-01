@@ -33,7 +33,7 @@ namespace oculus_sport.Services.Auth
         }
 
 
-        // Log in user with email and password
+        // --------- login user using email and passw
         public async Task<User> LoginAsync(string email, string password)
         {
             var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={ApiKey}";
@@ -75,7 +75,7 @@ namespace oculus_sport.Services.Auth
         }
 
 
-        // -------------Sign up new user
+        // ------------- sign up new user
         public async Task<User> SignUpAsync(string email, string password, string name, string studentId)
         {
             var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={ApiKey}";
@@ -85,12 +85,30 @@ namespace oculus_sport.Services.Auth
             var response = await _httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
             var result = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Firebase signup failed: {result}");
+            Console.WriteLine("Firebase signup raw response:");
+            Console.WriteLine(result);
 
-            var authResponse = JsonSerializer.Deserialize<FirebaseAuthResponse>(result)!;
+            var authResponse = JsonSerializer.Deserialize<FirebaseAuthResponse>(
+                result,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
 
-            if (string.IsNullOrWhiteSpace(authResponse.IdToken))
+            if (!response.IsSuccessStatusCode || !string.IsNullOrEmpty(authResponse?.Error?.Message))
+            {
+                var message = authResponse?.Error?.Message ?? "Unknown error";
+
+                Console.WriteLine($"Firebase signup error: {message}");
+
+                throw new Exception(message switch
+                {
+                    "EMAIL_EXISTS" => "This email is already registered.",
+                    "INVALID_EMAIL" => "Invalid email format.",
+                    string s when s.Contains("WEAK_PASSWORD") => "Password must be at least 6 characters.",
+                    _ => $"Signup failed: {message}"
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(authResponse?.IdToken))
                 throw new Exception("Firebase did not return a valid idToken.");
 
             _currentUser = new User
@@ -104,10 +122,13 @@ namespace oculus_sport.Services.Auth
             await SecureStorage.SetAsync("idToken", authResponse.IdToken);
             await SecureStorage.SetAsync("refreshToken", authResponse.RefreshToken);
 
+            Console.WriteLine($"Signup successful for user: {authResponse.Email} (ID: {authResponse.LocalId})");
+
             return _currentUser!;
         }
 
-        // Refresh token
+
+        // ---------------- Refresh token
         public async Task<string?> RefreshIdTokenAsync()
         {
             var refreshToken = await SecureStorage.GetAsync("refreshToken");
@@ -134,7 +155,7 @@ namespace oculus_sport.Services.Auth
             return newIdToken;
         }
 
-        // Log out user, clear stored tokens
+        // ------------------Log out user, clear stored tokens
         public async Task LogoutAsync()
         {
             _currentUser = null;
