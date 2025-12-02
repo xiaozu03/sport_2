@@ -85,4 +85,9 @@ public partial class HistoryPageViewModel : BaseViewModel
 
         await Shell.Current.GoToAsync("BookingSuccessPage", navigationParameter);
     }
+
+    public void OnAppearing()
+    {
+        LoadBookingsCommand.Execute(null);
+    }
 }

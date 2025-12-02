@@ -2,7 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using oculus_sport.Services.Auth;
 using oculus_sport.ViewModels.Base;
-using static System.Net.Mime.MediaTypeNames;
+//using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Maui.Controls;
 
 namespace oculus_sport.ViewModels.Auth
 {
@@ -27,11 +28,18 @@ namespace oculus_sport.ViewModels.Auth
         {
             if (IsBusy) return;
 
+            //------------- Basic Validation
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please enter both Email and Password.", "OK");
+                return;
+            }
+
             try
             {
                 IsBusy = true;
 
-                // Call the actual auth service (now returns User object)
+                // Call the actual auth service (returns User object)
                 var result = await _authService.LoginAsync(Email, Password);
 
                 if (result != null)
@@ -49,6 +57,7 @@ namespace oculus_sport.ViewModels.Auth
                 IsBusy = false;
             }
         }
+
 
         [RelayCommand]
         async Task GoToSignUp()

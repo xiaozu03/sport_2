@@ -2,7 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using oculus_sport.Services.Auth;
 using oculus_sport.ViewModels.Base;
-using static System.Net.Mime.MediaTypeNames;
+//using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Maui.Controls;
 
 namespace oculus_sport.ViewModels.Main;
 
@@ -42,7 +43,7 @@ public partial class ProfilePageViewModel : BaseViewModel
         bool confirm = await Shell.Current.DisplayAlert("Logout", "Are you sure you want to log out?", "Yes", "No");
         if (confirm)
         {
-            _authService.Logout();
+            await _authService.LogoutAsync();
             // Navigate to Sign Up Page (Absolute Route to clear stack)
             await Shell.Current.GoToAsync("//SignUpPage");
         }

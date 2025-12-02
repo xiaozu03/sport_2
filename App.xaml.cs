@@ -16,14 +16,16 @@ public partial class App : Application
     {
         return new Window(new AppShell());
     }
+    protected override void OnStart()
+    {
+        _ = HandleStartupAsync();
+    }
 
-    protected override async void OnStart()
+    private async Task HandleStartupAsync()
     {
         var current = Connectivity.NetworkAccess;
-
         if (current != NetworkAccess.Internet)
         {
-            // Offline Mode Logic
             string cachedUser = Preferences.Get("LastUserId", string.Empty);
             if (!string.IsNullOrEmpty(cachedUser))
             {
@@ -31,4 +33,19 @@ public partial class App : Application
             }
         }
     }
+
+    //protected override async void OnStart()
+    //{
+    //    var current = Connectivity.NetworkAccess;
+
+    //    if (current != NetworkAccess.Internet)
+    //    {
+    //        // Offline Mode Logic
+    //        string cachedUser = Preferences.Get("LastUserId", string.Empty);
+    //        if (!string.IsNullOrEmpty(cachedUser))
+    //        {
+    //            await Shell.Current.GoToAsync("//HistoryPage");
+    //        }
+    //    }
+    //}
 }

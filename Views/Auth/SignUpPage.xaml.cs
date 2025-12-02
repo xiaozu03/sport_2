@@ -1,12 +1,14 @@
+using Microsoft.Maui.Controls;
 using oculus_sport.ViewModels.Auth;
 
-namespace oculus_sport.Views.Auth;
-
-public partial class SignUpPage : ContentPage
+namespace oculus_sport.Views.Auth
 {
-    public SignUpPage(SignUpPageViewModel vm)
+    public partial class SignUpPage : ContentPage
     {
-        InitializeComponent();
-        BindingContext = vm;
+        public SignUpPage(SignUpPageViewModel vm)
+        {
+            InitializeComponent();
+            BindingContext = vm;
+        }
     }
 }

@@ -5,7 +5,7 @@
              x:Class="oculus_sport.Views.Auth.SignUpPage"
              Title="Sign Up"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{StaticResource White}">
+             BackgroundColor="White">
 
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
@@ -36,6 +36,25 @@
                            Keyboard="Email"
                            HeightRequest="50"/>
                 </Border>
+
+                <!-- Name Entry -->
+                <Border Stroke="{StaticResource Gray300}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="15,0">
+                    <Entry Placeholder="Full Name" 
+                           Text="{Binding Name}"
+                           TextColor="{StaticResource Black}"
+                           PlaceholderColor="{StaticResource Gray400}"
+                           HeightRequest="50"/>
+                </Border>
+
+                <!-- Student ID Entry -->
+                <Border Stroke="{StaticResource Gray300}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="15,0">
+                    <Entry Placeholder="Student ID" 
+                           Text="{Binding StudentId}"
+                           TextColor="{StaticResource Black}"
+                           PlaceholderColor="{StaticResource Gray400}"
+                           HeightRequest="50"/>
+                </Border>
+
 
                 <!-- Password Entry -->
                 <Border Stroke="{StaticResource Gray300}" StrokeThickness="1" StrokeShape="RoundRectangle 10" Padding="15,0">

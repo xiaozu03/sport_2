@@ -5,9 +5,11 @@ namespace oculus_sport.Views.Main;
 
 public partial class HistoryPage : ContentPage
 {
+    private readonly HistoryPageViewModel _viewModel;
     public HistoryPage(HistoryPageViewModel vm)
     {
         InitializeComponent();
+        //_viewModel = vm;
         BindingContext = vm; // Set BindingContext directly
     }
 
@@ -20,5 +22,6 @@ public partial class HistoryPage : ContentPage
         {
             viewModel.OnAppearing();
         }
+
     }
 }

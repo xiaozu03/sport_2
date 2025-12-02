@@ -8,12 +8,21 @@ using oculus_sport.ViewModels.Main;
 using oculus_sport.Views.Auth;
 using oculus_sport.Views.Main;
 
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using oculus_sport.Services.Auth;
+using oculus_sport.Services.Storage;
+
+
+
 // These using statements are for Firebase initialization and service
-using Plugin.Firebase;
-using Plugin.Firebase.Auth;
-using Plugin.Firebase.Firestore;
-using Plugin.Firebase.CloudMessaging;
-using Plugin.Firebase.Storage;
+//using Plugin.Firebase;
+//using Plugin.Firebase.Auth;
+//using Plugin.Firebase.Firestore;
+//using Plugin.Firebase.CloudMessaging;
+//using Plugin.Firebase.Storage;
 
 namespace oculus_sport;
 
@@ -31,6 +40,8 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+
+
         // ---------------------------------------------------------
         // ❗ FIREBASE INIT (Commented out for stability)
         //    The platform-specific setup (MainActivity.cs / AppDelegate.cs)
@@ -39,15 +50,17 @@ public static class MauiProgram
         // CrossFirebase.Initialize(); 
         // ---------------------------------------------------------
 
+
         // 1. Services
+
+        builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<IAuthService, FirebaseAuthService>();
-        builder.Services.AddSingleton<IDatabaseService, FirebaseDataService>();
+
         builder.Services.AddSingleton<Services.Other.ConnectivityService>();
         builder.Services.AddSingleton<IBookingService, BookingService>();
+        builder.Services.AddSingleton<LocalDatabaseService>();
+        builder.Services.AddSingleton<LocalDataService>();
 
-        // Registering BOTH to be safe:
-        builder.Services.AddSingleton<LocalDatabaseService>(); // Your Offline Service
-        builder.Services.AddSingleton<LocalDataService>();     // Partner's Service
 
         // 2. ViewModels
         builder.Services.AddTransient<LoginPageViewModel>();

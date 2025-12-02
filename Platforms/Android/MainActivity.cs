@@ -10,7 +10,7 @@ namespace oculus_sport
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Firebase.FirebaseApp.InitializeApp(this);
+            //Firebase.FirebaseApp.InitializeApp(this);
         }
     }
 }
