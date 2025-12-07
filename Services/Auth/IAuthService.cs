@@ -5,6 +5,7 @@ namespace oculus_sport.Services.Auth
 {
     public interface IAuthService
     {
+<<<<<<< HEAD
         // Parameter name changed to 'input' to imply Email OR Username
         Task<User> LoginAsync(string input, string password);
 
@@ -14,6 +15,13 @@ namespace oculus_sport.Services.Auth
         Task LogoutAsync();
 
         // get current user - profile page
+=======
+        Task<User> LoginAsync(string input, string password);
+
+        Task<User> SignUpAsync(string email, string password, string name, string phoneNumber, string studentId, string username);
+
+        Task LogoutAsync();
+>>>>>>> master
         User? GetCurrentUser();
         Task<string?> RefreshIdTokenAsync();
 

@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+<<<<<<< HEAD
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
     </Style>
@@ -33,12 +34,29 @@
         <Setter Property="Padding" Value="14,10"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>
         <Setter Property="MinimumWidthRequest" Value="44"/>
+=======
+    <!-- Global Style for ContentPage (applies background automatically) -->
+    <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+        <Setter Property="BackgroundColor" Value="{StaticResource PageBackgroundLight}" />
+    </Style>
+
+    <!-- MODERN BUTTON -->
+    <Style TargetType="Button">
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="HeightRequest" Value="50" />
+        <Setter Property="Padding" Value="14,10" />
+>>>>>>> master
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="CommonStates">
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
+<<<<<<< HEAD
                             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
                             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
                         </VisualState.Setters>
@@ -103,6 +121,16 @@
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+=======
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                            <Setter Property="Scale" Value="0.98"/>
+>>>>>>> master
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -110,6 +138,7 @@
         </Setter>
     </Style>
 
+<<<<<<< HEAD
     <Style TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
@@ -442,3 +471,41 @@
     </Style>
 
 </ResourceDictionary>
+=======
+    <!-- MODERN INPUT ENTRY -->
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{StaticResource PrimaryText}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource Gray400}" />
+        <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+        <Setter Property="HeightRequest" Value="50" />
+    </Style>
+
+    <!-- CARD STYLE (For Borders) -->
+    <Style TargetType="Border">
+        <Setter Property="Stroke" Value="Transparent"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 15"/>
+        <Setter Property="BackgroundColor" Value="White"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="Shadow">
+            <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.05" />
+        </Setter>
+    </Style>
+
+    <!-- LABEL STYLES -->
+    <Style x:Key="Headline" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource PrimaryText}" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+    </Style>
+
+    <Style x:Key="SubHeadline" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource SecondaryText}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+    </Style>
+
+</ResourceDictionary>
+>>>>>>> master

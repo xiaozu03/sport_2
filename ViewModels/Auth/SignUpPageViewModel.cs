@@ -3,8 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 using oculus_sport.Services.Auth;
 using oculus_sport.ViewModels.Base;
 using System.Diagnostics;
+<<<<<<< HEAD
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+=======
+>>>>>>> master
 
 namespace oculus_sport.ViewModels.Auth
 {
@@ -15,6 +18,10 @@ namespace oculus_sport.ViewModels.Auth
         [ObservableProperty]
         private string _email = string.Empty;
 
+<<<<<<< HEAD
+=======
+        // Restored: Username property (from your backup)
+>>>>>>> master
         [ObservableProperty]
         private string _username = string.Empty;
 
@@ -33,6 +40,11 @@ namespace oculus_sport.ViewModels.Auth
         [ObservableProperty]
         private string _phoneNumber = string.Empty;
 
+<<<<<<< HEAD
+=======
+        // NOTE: We replaced PhoneNumber with Username based on your preference
+        // If you need both, you can just add PhoneNumber back here.
+>>>>>>> master
 
         public SignUpPageViewModel(IAuthService authService)
         {
@@ -55,11 +67,19 @@ namespace oculus_sport.ViewModels.Auth
                 string.IsNullOrWhiteSpace(ConfirmPassword) ||
                 string.IsNullOrWhiteSpace(Name) ||
                 string.IsNullOrWhiteSpace(StudentId) ||
+<<<<<<< HEAD
                 string.IsNullOrWhiteSpace(PhoneNumber)
                 )
             {
                 Debug.WriteLine("[SignUp] Validation failed: missing required fields.");
                 await Shell.Current.DisplayAlert("Error", "Please fill in all fields (Email, Password, Name, ID).", "OK");
+=======
+                string.IsNullOrWhiteSpace(PhoneNumber) ||
+                string.IsNullOrWhiteSpace(Username))
+            {
+                Debug.WriteLine("[SignUp] Validation failed: missing required fields.");
+                await Shell.Current.DisplayAlert("Error", "Please fill in all fields (Email, Username, Name, ID).", "OK");
+>>>>>>> master
                 return;
             }
 
@@ -70,6 +90,7 @@ namespace oculus_sport.ViewModels.Auth
                 return;
             }
 
+<<<<<<< HEAD
             // 2. Strong Password Validation (optional)
             //if (!IsStrongPassword(Password))
             //{
@@ -108,6 +129,26 @@ namespace oculus_sport.ViewModels.Auth
                 {
                     Debug.WriteLine("[SignUp] Signup returned null user object.");
                 }
+=======
+            try
+            {
+                IsBusy = true;
+                Debug.WriteLine($"[SignUp] Starting signup for Email={Email}, Username={Username}");
+
+                // Updated: Call Auth Service with Username
+                // Ensure IAuthService.SignUpAsync signature matches this call!
+                var newUser = await _authService.SignUpAsync(Email, Password, Name, PhoneNumber, StudentId, Username);
+
+                if (newUser != null)
+                {
+                    Debug.WriteLine($"[SignUp] Signup successful. UserId={newUser.Id}");
+
+                    await Shell.Current.DisplayAlert("Success", "Account created successfully! Please log in.", "OK");
+
+                    // Navigate to Login Page (Absolute Route)
+                    await Shell.Current.GoToAsync("//LoginPage");
+                }
+>>>>>>> master
             }
             catch (Exception ex)
             {
@@ -117,7 +158,10 @@ namespace oculus_sport.ViewModels.Auth
             finally
             {
                 IsBusy = false;
+<<<<<<< HEAD
                 Debug.WriteLine("[SignUp] Operation finished. IsBusy reset to false.");
+=======
+>>>>>>> master
             }
         }
 
@@ -126,10 +170,13 @@ namespace oculus_sport.ViewModels.Auth
         {
             // Navigate back to Login Page
             await Shell.Current.GoToAsync("//LoginPage");
+<<<<<<< HEAD
 
 
             //await Shell.Current.GoToAsync("..");
 
+=======
+>>>>>>> master
         }
     }
 }

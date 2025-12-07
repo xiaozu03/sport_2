@@ -13,7 +13,17 @@ public partial class BookingSuccessPage : ContentPage
     // Disable hardware back button to prevent going back to "Confirmation"
     protected override bool OnBackButtonPressed()
     {
+<<<<<<< HEAD
         return true; // Return true to ignore the back button
+=======
+        if (BindingContext is BookingSuccessViewModel vm && vm.IsFromHistory)
+        {
+            Shell.Current.GoToAsync("..");
+            return true; // prevent default behavior
+        }
+
+        return base.OnBackButtonPressed();
+>>>>>>> master
     }
 
 }

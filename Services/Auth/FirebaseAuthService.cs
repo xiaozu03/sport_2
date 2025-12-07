@@ -1,7 +1,10 @@
 ﻿using Microsoft.Maui.Storage;
 using oculus_sport.Models;
 using oculus_sport.Services.Storage;
+<<<<<<< HEAD
 using System.Diagnostics;
+=======
+>>>>>>> master
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -9,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace oculus_sport.Services.Auth
 {
+<<<<<<< HEAD
     public class FirebaseRefreshResponse
     {
         public string IdToken { get; set; } = string.Empty;
@@ -21,11 +25,19 @@ namespace oculus_sport.Services.Auth
     {
         private readonly HttpClient _httpClient;
         private readonly FirebaseDataService _dataService;
+=======
+    public class FirebaseAuthService : IAuthService
+    {
+        private readonly HttpClient _httpClient;
+>>>>>>> master
         private const string ApiKey = "AIzaSyCYLKCEnZv33cviHuNRy4Go8IZVWcu-0aI";
         private User? _currentUser;
         private readonly FirebaseDataService _dataService;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
         public FirebaseAuthService(HttpClient httpClient, FirebaseDataService dataService)
         {
             _httpClient = httpClient;
@@ -46,7 +58,11 @@ namespace oculus_sport.Services.Auth
             public string Message { get; set; } = string.Empty;
         }
 
+<<<<<<< HEAD
         // LOGIN
+=======
+        // LOGIN (Updated with Username Logic)
+>>>>>>> master
         public async Task<User> LoginAsync(string input, string password)
         {
             string emailToLogin = input;
@@ -70,16 +86,24 @@ namespace oculus_sport.Services.Auth
             var response = await _httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
             var result = await response.Content.ReadAsStringAsync();
 
+<<<<<<< HEAD
             //Console.WriteLine("Firebase raw response:");
             //Console.WriteLine(result);
 
             var authResponse = JsonSerializer.Deserialize<FirebaseAuthResponse>(result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true } );
+=======
+            var authResponse = JsonSerializer.Deserialize<FirebaseAuthResponse>(
+                result,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+>>>>>>> master
 
             if (!response.IsSuccessStatusCode || !string.IsNullOrEmpty(authResponse?.Error?.Message))
             {
                 throw new Exception($"Login failed: {authResponse?.Error?.Message ?? "Unknown error"}");
             }
 
+<<<<<<< HEAD
             if (string.IsNullOrWhiteSpace(authResponse?.IdToken))
                 throw new Exception("Firebase did not return a valid idToken.");
 
@@ -114,12 +138,47 @@ namespace oculus_sport.Services.Auth
 
             return _currentUser!;
         }
+=======
+            // Save tokens
+            await SecureStorage.SetAsync("idToken", authResponse.IdToken);
+            if (!string.IsNullOrEmpty(authResponse.RefreshToken))
+                await SecureStorage.SetAsync("refreshToken", authResponse.RefreshToken);
+            
+            Preferences.Set("LastUserId", authResponse.LocalId);
+
+            // 3. FETCH FULL PROFILE (Populate Name for UI)
+            var fullProfile = await _dataService.GetUserFromFirestore(authResponse.LocalId, authResponse.IdToken);
+
+            if (fullProfile != null)
+            {
+                _currentUser = fullProfile;
+                _currentUser.IdToken = authResponse.IdToken;
+                _currentUser.RefreshToken = authResponse.RefreshToken;
+            }
+            else
+            {
+                // Fallback
+                _currentUser = new User 
+                { 
+                    Id = authResponse.LocalId, 
+                    Email = authResponse.Email, 
+                    Name = "Guest",
+                    IdToken = authResponse.IdToken,
+                    RefreshToken = authResponse.RefreshToken
+                };
+            }
+>>>>>>> master
 
             return _currentUser;
         }
 
+<<<<<<< HEAD
         // ------------- sign up new user
         public async Task<User> SignUpAsync(string email, string password, string name, string studentId, string phoneNumber)
+=======
+        // SIGN UP (Updated with Username)
+        public async Task<User> SignUpAsync(string email, string password, string name, string phoneNumber, string studentId, string username)
+>>>>>>> master
         {
             var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={ApiKey}";
             var payload = new { email, password, returnSecureToken = true };
@@ -144,6 +203,7 @@ namespace oculus_sport.Services.Auth
                 Email = authResponse.Email,
                 Name = name,
                 StudentId = studentId,
+<<<<<<< HEAD
                 PhoneNumber = phoneNumber
             };
 
@@ -153,10 +213,25 @@ namespace oculus_sport.Services.Auth
 
             await SecureStorage.SetAsync("idToken", authResponse.IdToken);
             await SecureStorage.SetAsync("refreshToken", authResponse.RefreshToken);
+=======
+                Username = username, // Save Username
+                PhoneNumber = phoneNumber,
+                IdToken = authResponse.IdToken,
+                RefreshToken = authResponse.RefreshToken
+            };
+
+            // Save to Firestore
+            await _dataService.SaveUserToFirestoreAsync(_currentUser, authResponse.IdToken);
+
+            await SecureStorage.SetAsync("idToken", authResponse.IdToken);
+            if (!string.IsNullOrEmpty(authResponse.RefreshToken))
+                await SecureStorage.SetAsync("refreshToken", authResponse.RefreshToken);
+>>>>>>> master
 
             return _currentUser!;
         }
 
+<<<<<<< HEAD
 
         // ---------------- Refresh token
         //public async Task<string?> RefreshIdTokenAsync()
@@ -185,6 +260,8 @@ namespace oculus_sport.Services.Auth
         //    return newIdToken;
         //}
 
+=======
+>>>>>>> master
         public async Task<string?> RefreshIdTokenAsync()
         {
             var refreshToken = await SecureStorage.GetAsync("refreshToken");
@@ -193,15 +270,22 @@ namespace oculus_sport.Services.Auth
             var url = $"https://securetoken.googleapis.com/v1/token?key={ApiKey}";
             var content = new FormUrlEncodedContent(new[]
             {
+<<<<<<< HEAD
             new KeyValuePair<string, string>("grant_type", "refresh_token"),
             new KeyValuePair<string, string>("refresh_token", refreshToken)
         });
+=======
+                new KeyValuePair<string, string>("grant_type", "refresh_token"),
+                new KeyValuePair<string, string>("refresh_token", refreshToken)
+            });
+>>>>>>> master
 
             var response = await _httpClient.PostAsync(url, content);
             var result = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode) return null;
 
+<<<<<<< HEAD
             var refreshResponse = JsonSerializer.Deserialize<FirebaseRefreshResponse>(result,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
@@ -246,10 +330,24 @@ namespace oculus_sport.Services.Auth
             Debug.WriteLine($"[TokenCheck] Token expired? {expDate < DateTimeOffset.UtcNow}");
 
             return expDate < DateTimeOffset.UtcNow;
+=======
+            var json = JsonSerializer.Deserialize<JsonElement>(result);
+            if (json.TryGetProperty("id_token", out var tokenProp))
+            {
+                var newIdToken = tokenProp.GetString();
+                if (!string.IsNullOrWhiteSpace(newIdToken))
+                {
+                    await SecureStorage.SetAsync("idToken", newIdToken);
+                    return newIdToken;
+                }
+            }
+            return null;
+>>>>>>> master
         }
 
         public async Task LogoutAsync()
         {
+<<<<<<< HEAD
             await Task.Delay(200);
 
             _currentUser = null;
@@ -257,11 +355,21 @@ namespace oculus_sport.Services.Auth
             //await SecureStorage.SetAsync("refreshToken", string.Empty);
             SecureStorage.Remove("idToken");
             SecureStorage.Remove("refreshToken");
+=======
+            _currentUser = null;
+            SecureStorage.Remove("idToken");
+            SecureStorage.Remove("refreshToken");
+            Preferences.Remove("LastUserId");
+>>>>>>> master
             await Task.CompletedTask;
         }
 
         public User? GetCurrentUser() => _currentUser;
     }
+<<<<<<< HEAD
 
 
 }
+=======
+}
+>>>>>>> master

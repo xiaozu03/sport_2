@@ -5,6 +5,10 @@
         xmlns:views="clr-namespace:oculus_sport.Views.Main"
         xmlns:auth="clr-namespace:oculus_sport.Views.Auth"
         Title="Oculus Sport"
+<<<<<<< HEAD
+=======
+        Shell.NavBarIsVisible="False"
+>>>>>>> master
         Shell.TabBarBackgroundColor="{StaticResource White}"
         Shell.TabBarForegroundColor="{StaticResource Primary}"
         Shell.TabBarTitleColor="{StaticResource Primary}">
