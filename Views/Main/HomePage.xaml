@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:oculus_sport.ViewModels.Main"
+             xmlns:models="clr-namespace:oculus_sport.Models"
+             x:Class="oculus_sport.Views.Main.HomePage"
+             Title="Home"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- 1. HEADER SECTION -->
+        <Grid Grid.Row="0">
+            <!-- Background Gradient with Rounded Bottom -->
+            <Border StrokeThickness="0" 
+                    BackgroundColor="{StaticResource Primary}"
+                    HorizontalOptions="Fill"
+                    StrokeShape="RoundRectangle 0,0,30,30" 
+                    HeightRequest="180"
+                    VerticalOptions="Start"/>
+
+            <!-- Header Content -->
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Padding="25,30,25,40">
+
+                <!-- Greetings -->
+                <VerticalStackLayout Grid.Column="0" Spacing="5">
+                    <Label Text="{Binding UserName, StringFormat='Hello, {0}'}" 
+                           TextColor="{StaticResource Gray200}" 
+                           FontSize="16" />
+                    <Label Text="Find your court" 
+                           TextColor="{StaticResource White}" 
+                           FontSize="26" 
+                           FontAttributes="Bold" />
+                </VerticalStackLayout>
+
+                <!-- Profile Pic -->
+                <Border Grid.Column="1" 
+                        StrokeShape="RoundRectangle 25"
+                        HeightRequest="50" 
+                        WidthRequest="50"
+                        Stroke="White"
+                        StrokeThickness="2"
+                        Padding="0">
+                    <Image Source="uts_logo.png" Aspect="AspectFill"/>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToNotificationsCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Search Bar Floating on top -->
+                <Border Grid.Row="1" Grid.ColumnSpan="2" Margin="0,30,0,0" 
+                        StrokeShape="RoundRectangle 15" 
+                        BackgroundColor="White" 
+                        StrokeThickness="0" 
+                        HeightRequest="50"
+                        Padding="15,0">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,5" Radius="10" Opacity="0.1"/>
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Label Text="🔍" VerticalOptions="Center" TextColor="Gray" Margin="0,0,10,0"/>
+                        <Entry Grid.Column="1" 
+                               Placeholder="Search for badminton, ping pong..." 
+                               TextColor="Black" 
+                               PlaceholderColor="Gray"
+                               VerticalOptions="Center"
+                               BackgroundColor="Transparent"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- 2. SCROLLABLE CONTENT -->
+        <ScrollView Grid.Row="1" Padding="20,10,20,20">
+            <VerticalStackLayout Spacing="20">
+
+                <!-- Categories -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Categories" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryText}"/>
+
+                    <CollectionView ItemsSource="{Binding Categories}" HeightRequest="50">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:SportCategory">
+                                <Border StrokeShape="RoundRectangle 20" 
+                                        StrokeThickness="0"
+                                        BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter={StaticResource Primary}}"
+                                        Padding="20,10">
+                                    <Label Text="{Binding Name}" 
+                                           TextColor="{Binding IsSelected, Converter={StaticResource SelectedTextColorConverter}}"
+                                           FontAttributes="Bold" 
+                                           VerticalOptions="Center"/>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomePageViewModel}}, Path=SelectCategoryCommand}" CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Available Courts -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Available Courts" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryText}"/>
+
+                    <CollectionView ItemsSource="{Binding Facilities}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="15" VerticalItemSpacing="15"/>
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Facility">
+                                <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="White">
+                                    <Grid RowDefinitions="120, Auto">
+                                        <Image Grid.Row="0" Source="{Binding ImageUrl}" Aspect="AspectFill" BackgroundColor="LightGray"/>
+
+                                        <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="2">
+                                            <Label Text="{Binding FacilityName}" FontAttributes="Bold" FontSize="14" LineBreakMode="TailTruncation" TextColor="{StaticResource PrimaryText}"/>
+                                            <Label Text="{Binding Location}" FontSize="11" TextColor="Gray" LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding Price, StringFormat='Price: RM {0:F2}'}" TextColor="{StaticResource Primary}" FontSize="12" FontAttributes="Bold"/>
+                                        </VerticalStackLayout>
+
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomePageViewModel}}, Path=BookFacilityCommand}" CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

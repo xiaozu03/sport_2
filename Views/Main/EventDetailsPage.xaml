@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:oculus_sport.ViewModels.Main"
+             x:Class="oculus_sport.Views.Main.EventDetailsPage"
+             Title="Event Details"
+             BackgroundColor="{StaticResource PageBackgroundLight}">
+
+    <ScrollView>
+        <VerticalStackLayout>
+            <Image Source="{Binding SportEvent.ImageUrl}" 
+                   Aspect="AspectFill" 
+                   HeightRequest="250" 
+                   BackgroundColor="LightGray"/>
+
+            <VerticalStackLayout Padding="20" Spacing="15">
+                <Border HorizontalOptions="Start" StrokeShape="RoundRectangle 5" BackgroundColor="{StaticResource Secondary}" StrokeThickness="0" Padding="10,5">
+                    <Label Text="{Binding SportEvent.DateDisplay}" TextColor="{StaticResource Primary}" FontAttributes="Bold" FontSize="12"/>
+                </Border>
+
+                <Label Text="{Binding SportEvent.Title}" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       TextColor="{StaticResource Black}"/>
+
+                <Label Text="{Binding SportEvent.Description}" 
+                       FontSize="16" 
+                       TextColor="{StaticResource Gray600}" 
+                       LineHeight="1.5"/>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
