@@ -38,25 +38,6 @@ namespace oculus_sport.ViewModels.Auth
             try
             {
                 IsBusy = true;
-<<<<<<< HEAD
-                var result = await _authService.LoginAsync(Email, Password);
-
-                // ---- sync username in homepage w login
-                if (result != null)
-                {
-                    Debug.WriteLine($"[DEBUG Login] IdToken from auth: {result.IdToken}");
-
-                    // --- save token
-                    await SecureStorage.SetAsync("idToken", result.IdToken);
-                    if (!string.IsNullOrEmpty(result.RefreshToken))
-                        await SecureStorage.SetAsync("refreshToken", result.RefreshToken);
-                   
-                    Preferences.Set("LastUserId", result.Id);
-
-                    // --- nav to homepage
-                    await Shell.Current.GoToAsync($"//{nameof(Views.Main.HomePage)}", 
-                        new Dictionary<string, object>{{"User", result }});
-=======
 
                 // The AuthService now handles the logic for username vs email lookup internally
                 // We just pass the input (which could be email OR username)
@@ -78,7 +59,6 @@ namespace oculus_sport.ViewModels.Auth
                     // --- nav to homepage AND PASS USER OBJECT to update "Hello, Name" immediately
                     await Shell.Current.GoToAsync($"//{nameof(Views.Main.HomePage)}",
                         new Dictionary<string, object> { { "User", result } });
->>>>>>> master
                 }
 
             }

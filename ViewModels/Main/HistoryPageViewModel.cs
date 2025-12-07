@@ -95,12 +95,8 @@ public partial class HistoryPageViewModel : BaseViewModel
 
         var navigationParameter = new Dictionary<string, object>
         {
-<<<<<<< HEAD
-            { "Booking", booking }
-=======
             { "Booking", booking },
             { "IshFromHistory", true }
->>>>>>> master
         };
 
         await Shell.Current.GoToAsync("BookingSuccessPage", navigationParameter);

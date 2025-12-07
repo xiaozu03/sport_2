@@ -29,10 +29,6 @@
                     <Border StrokeShape="RoundRectangle 10"
                             StrokeThickness="1"
                             Stroke="{StaticResource Gray300}"
-<<<<<<< HEAD
-                            HeightRequest="220"
-=======
->>>>>>> master
                             Padding="0"
                             BackgroundColor="#F5F5F5">
 
