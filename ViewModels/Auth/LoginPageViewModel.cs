@@ -42,7 +42,8 @@ namespace oculus_sport.ViewModels.Auth
                 // The AuthService now handles the logic for username vs email lookup internally
                 // We just pass the input (which could be email OR username)
                 var result = await _authService.LoginAsync(Email, Password);
-
+                var token = await SecureStorage.GetAsync("idToken");
+                Debug.WriteLine($"[DEBUG] Stored id token: {token}");
                 if (result != null)
                 {
                     Debug.WriteLine($"[DEBUG Login] Login successful. User Name: {result.Name}");

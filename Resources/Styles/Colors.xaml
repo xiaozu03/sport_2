@@ -16,6 +16,7 @@
     <!-- Soft Amber/Gold for crucial buttons (Book Now, Login) to make them pop -->
     <Color x:Key="Accent">#FFC107</Color>
     <Color x:Key="AccentDark">#FF8F00</Color>
+    <Color x:Key="Secondary">#E3F2FD</Color>
 
     <!-- 3. BACKGROUNDS -->
     <Color x:Key="PageBackgroundLight">#F5F6FA</Color>
@@ -24,6 +25,7 @@
     <Color x:Key="White">#FFFFFF</Color>
 
     <!-- 4. TEXT COLORS -->
+    <Color x:Key="Black">#000000</Color>
     <Color x:Key="PrimaryText">#1A1A1A</Color>
     <Color x:Key="SecondaryText">#757575</Color>
     <Color x:Key="WhiteText">#FFFFFF</Color>

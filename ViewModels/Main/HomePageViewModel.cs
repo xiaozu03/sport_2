@@ -97,41 +97,56 @@ namespace oculus_sport.ViewModels.Main
 
         public async Task LoadAsync()
         {
-            // 1. Get Token from Storage
+            // 1. Try to get/refresh the token
             var idToken = await SecureStorage.GetAsync("idToken");
-
-            // 2. Validate Token
             if (string.IsNullOrEmpty(idToken) || IsTokenExpired(idToken))
+            {
+                var refreshed = await _authService.RefreshIdTokenAsync();
+                if (!string.IsNullOrEmpty(refreshed))
+                {
+                    idToken = refreshed;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(idToken))
+            {
+                _idToken = idToken;
+                StatusMessage = string.Empty;
+            }
+            else
+            {
+                StatusMessage = "Offline mode: limited data available.";
+            }
+
+            // 2. Ensure we have a user in memory (pull from cache if needed)
+            var user = _authService.GetCurrentUser() ?? await _authService.GetCachedUserAsync();
+            if (user != null)
+            {
+                UserName = user.Name;
+                if (!string.IsNullOrEmpty(idToken))
+                {
+                    user.IdToken = idToken;
+                }
+                CurrentUser = user;
+            }
+            else if (!string.IsNullOrEmpty(_idToken))
+            {
+                // Fallback: fetch user from DB using stored ID when we have a token
+                var uid = Preferences.Get("LastUserId", "");
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    await UserHomepageSync(uid, _idToken);
+                }
+            }
+            else
             {
                 StatusMessage = "Session expired. Please log in again.";
                 await Shell.Current.GoToAsync("//LoginPage");
                 return;
             }
 
-            _idToken = idToken;
-
-            // 3. Get/Refresh User
-            // If we navigated here normally, CurrentUser might already be set. 
-            // If not (cold start), we fetch it.
-            var user = _authService.GetCurrentUser();
-            if (user != null)
-            {
-                UserName = user.Name;
-                user.IdToken = idToken;
-                CurrentUser = user;
-            }
-            else
-            {
-                // Fallback: fetch user from DB using stored ID
-                var uid = Preferences.Get("LastUserId", "");
-                if (!string.IsNullOrEmpty(uid))
-                {
-                    await UserHomepageSync(uid, idToken);
-                }
-            }
-
-            // 4. Ensure Data is Loaded
-            if (_allFacilities.Count == 0)
+            // 3. Only attempt remote data load when a valid token exists
+            if (!string.IsNullOrEmpty(_idToken) && _allFacilities.Count == 0)
             {
                 await LoadDataAsync();
             }

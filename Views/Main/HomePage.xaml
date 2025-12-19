@@ -71,69 +71,64 @@
             </Grid>
         </Grid>
 
-        <!-- 2. SCROLLABLE CONTENT -->
-        <ScrollView Grid.Row="1" Padding="20,10,20,20">
-            <VerticalStackLayout Spacing="20">
+        <!-- 2. CONTENT LIST -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Facilities}" Margin="20,10,20,20">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="20">
+                    <!-- Categories -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Categories" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryText}"/>
 
-                <!-- Categories -->
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Categories" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryText}"/>
+                        <CollectionView ItemsSource="{Binding Categories}" HeightRequest="50">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:SportCategory">
+                                    <Border StrokeShape="RoundRectangle 20" 
+                                            StrokeThickness="0"
+                                            BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter={StaticResource Primary}}"
+                                            Padding="20,10">
+                                        <Label Text="{Binding Name}" 
+                                               TextColor="{Binding IsSelected, Converter={StaticResource SelectedTextColorConverter}}"
+                                               FontAttributes="Bold" 
+                                               VerticalOptions="Center"/>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomePageViewModel}}, Path=SelectCategoryCommand}" CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
 
-                    <CollectionView ItemsSource="{Binding Categories}" HeightRequest="50">
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
-                        </CollectionView.ItemsLayout>
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:SportCategory">
-                                <Border StrokeShape="RoundRectangle 20" 
-                                        StrokeThickness="0"
-                                        BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter={StaticResource Primary}}"
-                                        Padding="20,10">
-                                    <Label Text="{Binding Name}" 
-                                           TextColor="{Binding IsSelected, Converter={StaticResource SelectedTextColorConverter}}"
-                                           FontAttributes="Bold" 
-                                           VerticalOptions="Center"/>
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomePageViewModel}}, Path=SelectCategoryCommand}" CommandParameter="{Binding .}"/>
-                                    </Border.GestureRecognizers>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-
-                <!-- Available Courts -->
-                <VerticalStackLayout Spacing="10">
                     <Label Text="Available Courts" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryText}"/>
-
-                    <CollectionView ItemsSource="{Binding Facilities}">
-                        <CollectionView.ItemsLayout>
-                            <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="15" VerticalItemSpacing="15"/>
-                        </CollectionView.ItemsLayout>
-
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:Facility">
-                                <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="White">
-                                    <Grid RowDefinitions="120, Auto">
-                                        <Image Grid.Row="0" Source="{Binding ImageUrl}" Aspect="AspectFill" BackgroundColor="LightGray"/>
-
-                                        <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="2">
-                                            <Label Text="{Binding FacilityName}" FontAttributes="Bold" FontSize="14" LineBreakMode="TailTruncation" TextColor="{StaticResource PrimaryText}"/>
-                                            <Label Text="{Binding Location}" FontSize="11" TextColor="Gray" LineBreakMode="TailTruncation"/>
-                                            <Label Text="{Binding Price, StringFormat='Price: RM {0:F2}'}" TextColor="{StaticResource Primary}" FontSize="12" FontAttributes="Bold"/>
-                                        </VerticalStackLayout>
-
-                                        <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomePageViewModel}}, Path=BookFacilityCommand}" CommandParameter="{Binding .}"/>
-                                        </Grid.GestureRecognizers>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
                 </VerticalStackLayout>
+            </CollectionView.Header>
 
-            </VerticalStackLayout>
-        </ScrollView>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="15" VerticalItemSpacing="15"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Facility">
+                    <Border StrokeShape="RoundRectangle 15" StrokeThickness="0" BackgroundColor="White">
+                        <Grid RowDefinitions="120, Auto">
+                            <Image Grid.Row="0" Source="{Binding ImageUrl}" Aspect="AspectFill" BackgroundColor="LightGray"/>
+
+                            <VerticalStackLayout Grid.Row="1" Padding="10" Spacing="2">
+                                <Label Text="{Binding FacilityName}" FontAttributes="Bold" FontSize="14" LineBreakMode="TailTruncation" TextColor="{StaticResource PrimaryText}"/>
+                                <Label Text="{Binding Location}" FontSize="11" TextColor="Gray" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Price, StringFormat='Price: RM {0:F2}'}" TextColor="{StaticResource Primary}" FontSize="12" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomePageViewModel}}, Path=BookFacilityCommand}" CommandParameter="{Binding .}"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </Grid>
 </ContentPage>

@@ -33,9 +33,7 @@
                             BackgroundColor="#F5F5F5">
 
                         <Image Source="{Binding Facility.LocationMapUrl}"
-                               Aspect="AspectFill"
-                               HorizontalOptions="Fill"
-                               VerticalOptions="Fill" />
+                               Aspect="AspectFit"/>
                     </Border>
                 </VerticalStackLayout>
 

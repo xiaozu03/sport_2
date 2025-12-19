@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Storage;
+﻿using System.Collections.Generic;
+using Microsoft.Maui.Storage;
 using oculus_sport.Models;
 using oculus_sport.Services.Storage;
 using System.Net.Http;
@@ -14,11 +15,13 @@ namespace oculus_sport.Services.Auth
         private const string ApiKey = "AIzaSyCYLKCEnZv33cviHuNRy4Go8IZVWcu-0aI";
         private User? _currentUser;
         private readonly FirebaseDataService _dataService;
+        private readonly LocalDataService _localDataService;
 
-        public FirebaseAuthService(HttpClient httpClient, FirebaseDataService dataService)
+        public FirebaseAuthService(HttpClient httpClient, FirebaseDataService dataService, LocalDataService localDataService)
         {
             _httpClient = httpClient;
             _dataService = dataService;
+            _localDataService = localDataService;
         }
 
         private class FirebaseAuthResponse
@@ -98,6 +101,7 @@ namespace oculus_sport.Services.Auth
                 };
             }
 
+            await _localDataService.SaveLocalUserProfileAsync(_currentUser);
             return _currentUser;
         }
 
@@ -135,6 +139,7 @@ namespace oculus_sport.Services.Auth
 
             // Save to Firestore
             await _dataService.SaveUserToFirestoreAsync(_currentUser, authResponse.IdToken);
+            await _localDataService.SaveLocalUserProfileAsync(_currentUser);
 
             await SecureStorage.SetAsync("idToken", authResponse.IdToken);
             if (!string.IsNullOrEmpty(authResponse.RefreshToken))
@@ -179,9 +184,23 @@ namespace oculus_sport.Services.Auth
             SecureStorage.Remove("idToken");
             SecureStorage.Remove("refreshToken");
             Preferences.Remove("LastUserId");
-            await Task.CompletedTask;
+            await _localDataService.ClearLocalUserProfileAsync();
         }
 
         public User? GetCurrentUser() => _currentUser;
+
+        public async Task<User?> GetCachedUserAsync()
+        {
+            if (_currentUser != null)
+                return _currentUser;
+
+            var cached = await _localDataService.GetLocalUserProfileAsync();
+            if (cached != null)
+            {
+                _currentUser = cached;
+            }
+
+            return _currentUser;
+        }
     }
 }

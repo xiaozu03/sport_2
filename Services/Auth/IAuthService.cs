@@ -12,6 +12,7 @@ namespace oculus_sport.Services.Auth
         Task LogoutAsync();
         User? GetCurrentUser();
         Task<string?> RefreshIdTokenAsync();
+        Task<User?> GetCachedUserAsync();
 
     }
 }
