@@ -58,6 +58,27 @@ This project strictly adheres to the **MVVM (Model-View-ViewModel)** pattern to 
 │   ├── TimeSlot.cs               # Booking time slots
 │   └── User.cs                   # User profile model
 │
+├── Platforms/                    # Platform-specific code
+│   ├── Android/
+│   ├── iOS/
+│   ├── MacCatalyst/
+│   ├── Tizen/
+│   └── Windows/
+│
+├── Resources/                    # App resources
+│   ├── AppIcon/                  # Application icons
+│   ├── Converters/               # Value converters for XAML bindings
+│   │   ├── BoolToColorConverter.cs
+│   │   ├── IsNotNullOrEmptyConverter.cs
+│   │   └── SelectedTextColorConverter.cs
+│   ├── Fonts/                    # Custom fonts (OpenSans)
+│   ├── Images/                   # Static images and assets
+│   ├── Raw/                      # Raw assets (Text files, etc.)
+│   ├── Splash/                   # Splash screen SVG
+│   ├── Strings/                  # Localization (AppResources.resx)
+│   └── Styles/                   # Global XAML styles
+│       ├── Colors.xaml           # Color palette
+│       └── Styles.xaml           # Control styles
 │
 ├── Services/                     # Business logic and data access
 │   ├── Auth/                     # Authentication services
