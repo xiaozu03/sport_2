@@ -46,73 +46,95 @@ This project strictly adheres to the **MVVM (Model-View-ViewModel)** pattern to 
 ## 5. Project File Structure
 ```
 /CampusSports.App
+├── Helpers/                      # Helper classes and constants
+│   └── MessagingCenterKeys.cs    # Keys for pub/sub messaging
 │
-├── Models/
-│   ├── User.cs         # User profile data (local & remote)
-│   ├── Facility.cs     # Facility info (e.g., "Badminton Court 1")
-│   └── Booking.cs      # Booking details (user, facility, date)
-│   └── SportCategory.cs
-│   └── TimeSlot.cs
+├── Models/                       # Data models
+│   ├── Booking.cs                # Reservation entity
+│   ├── Facility.cs               # Facility details (includes Geo-coordinates)
+│   ├── NotificationItem.cs       # Notification model
+│   ├── SportCategory.cs          # Categories (Badminton, Basketball, etc.)
+│   ├── SportEvent.cs             # Campus event updates
+│   ├── TimeSlot.cs               # Booking time slots
+│   └── User.cs                   # User profile model
 │
-├── ViewModels/
-│   ├── Base/
-│   │   └── BaseViewModel.cs # Base class for INotifyPropertyChanged
-│   │
-│   ├── Auth/
+├── Platforms/                    # Platform-specific code
+│   ├── Android/
+│   ├── iOS/
+│   ├── MacCatalyst/
+│   ├── Tizen/
+│   └── Windows/
+│
+├── Resources/                    # App resources
+│   ├── AppIcon/                  # Application icons
+│   ├── Converters/               # Value converters for XAML bindings
+│   │   ├── BoolToColorConverter.cs
+│   │   ├── IsNotNullOrEmptyConverter.cs
+│   │   └── SelectedTextColorConverter.cs
+│   ├── Fonts/                    # Custom fonts (OpenSans)
+│   ├── Images/                   # Static images and assets
+│   ├── Raw/                      # Raw assets (Text files, etc.)
+│   ├── Splash/                   # Splash screen SVG
+│   ├── Strings/                  # Localization (AppResources.resx)
+│   └── Styles/                   # Global XAML styles
+│       ├── Colors.xaml           # Color palette
+│       └── Styles.xaml           # Control styles
+│
+├── Services/                     # Business logic and data access
+│   ├── Auth/                     # Authentication services
+│   │   ├── FirebaseAuthService.cs
+│   │   └── IAuthService.cs
+│   ├── Other/                    # General services
+│   │   ├── BookingService.cs
+│   │   ├── ConnectivityService.cs
+│   │   ├── IBookingService.cs
+│   │   └── NotificationService.cs
+│   └── Storage/                  # Data persistence
+│       ├── FirebaseDataService.cs
+│       ├── IDatabaseService.cs
+│       └── LocalDatabaseService.cs
+│
+├── ViewModels/                   # MVVM ViewModels
+│   ├── Auth/                     # Authentication logic
 │   │   ├── LoginPageViewModel.cs
 │   │   └── SignUpPageViewModel.cs
-│   │
-│   └── Main/
-│       ├── HomePageViewModel.cs
-│       ├── SchedulePageViewModel.cs
+│   ├── Base/
+│   │   └── BaseViewModel.cs      # Shared ViewModel functionality
+│   └── Main/                     # Core feature logic
+│       ├── BookingConfirmationViewModel.cs
+│       ├── BookingDetailsViewModel.cs
+│       ├── BookingSuccessViewModel.cs
+│       ├── BookingViewModel.cs
+│       ├── EventDetailsViewModel.cs
 │       ├── EventPageViewModel.cs
 │       ├── HistoryPageViewModel.cs
-│       └── ProfilePageViewModel.cs
+│       ├── HomePageViewModel.cs
+│       ├── NotificationPageViewModel.cs
+│       ├── ProfilePageViewModel.cs
+│       └── SchedulePageViewModel.cs
 │
-├── Views/
-│   ├── Auth/
+├── Views/                        # UI Pages (XAML + Code-behind)
+│   ├── Auth/                     # Login & Signup screens
 │   │   ├── LoginPage.xaml
 │   │   └── SignUpPage.xaml
-│   │
-│   └── Main/
-│       ├── HomePage.xaml
-│       ├── SchedulePage.xaml
+│   └── Main/                     # Main app screens
+│       ├── BookingConfirmationPage.xaml
+│       ├── BookingDetailsPage.xaml
+│       ├── BookingPage.xaml      # Includes Map View
+│       ├── BookingSuccessPage.xaml
+│       ├── EventDetailsPage.xaml
 │       ├── EventPage.xaml
 │       ├── HistoryPage.xaml
-│       └── ProfilePage.xaml
+│       ├── HomePage.xaml
+│       ├── NotificationPage.xaml
+│       ├── ProfilePage.xaml
+│       └── SchedulePage.xaml
 │
-├── Services/
-│   ├── Auth/
-│   │   ├── IAuthService.cs         # Interface for Login/Signup
-│   │   └── FirebaseAuthService.cs  # Implementation
-│   │
-│   ├── Storage/
-│   │   ├── IDatabaseService.cs     # Generic data interface
-│   │   ├── FirebaseDataService.cs  # Implements online data (Firebase)
-│   │   └── LocalDataService.cs     # Implements offline data (SQLite)
-│   │
-│   └── Other/
-│       ├── ConnectivityService.cs  # Checks for network connection
-│       └── NotificationService.cs  # Handles local notifications
-│
-├── Resources/
-│   ├── Images/         # App icons, logos, and other media
-│   ├── Fonts/          # Custom fonts
-│   ├── Styles/         # Global styles (Colors.xaml, Styles.xaml)
-│   └── Strings/        # .resx files for app localization (e.g., AppResources.resx)
-│
-├── Helpers/
-│   └── MessagingCenterKeys.cs # Constants for MessagingCenter
-│
-├── Platforms/            # .NET MAUI platform-specific code
-│
-├── App.xaml              # Main App class (handles app life-cycle)
-├── App.xaml.cs
-│
-├── AppShell.xaml         # Defines the main app navigation (Tab Bar)
-├── AppShell.xaml.cs
-│
-└── MauiProgram.cs        # App entry point and DI service registration
+├── App.xaml                      # App entry point & global resources
+├── AppShell.xaml                 # App navigation shell
+├── GlobalXmlns.cs                # Global XML namespace definitions
+├── MauiProgram.cs                # Dependency injection & app configuration
+└── oculus_sport.csproj           # Project file
 ```
 ## 6. Getting Started
 
